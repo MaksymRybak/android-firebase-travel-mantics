@@ -2,6 +2,7 @@ package it.rybak.android.travelmantics;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,6 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 public class ListActivity extends AppCompatActivity {
     @Override
@@ -32,6 +37,17 @@ public class ListActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, DealActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.logout_menu: {
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("Logout", "User Logged Out");
+                                FirebaseUtil.attachListener();
+                            }
+                        });
+                FirebaseUtil.detachListener();
             }
         }
         return super.onOptionsItemSelected(item);
